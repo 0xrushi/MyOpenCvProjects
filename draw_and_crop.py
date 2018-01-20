@@ -1,6 +1,6 @@
-import argparse
 import cv2
 import pyautogui
+import numpy as np
 # initialize the list of reference points and boolean indicating
 # whether cropping is being performed or not
 refPt = []
@@ -35,16 +35,10 @@ def draw_and_crop(event, x, y, flags, param):
         #print len(refPt)
         return
 
-# construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", required=True, help="Path to the image")
-args = vars(ap.parse_args())
-
-# load the image, clone it, and setup the mouse callback function
-image = cv2.imread(args["image"])
+image=np.array(pyautogui.screenshot())
 clone = image.copy()
 cv2.namedWindow("image")
-cv2.setMouseCallback("image", click_and_crop)
+cv2.setMouseCallback("image", draw_and_crop)
 
 # keep looping until the 'q' key is pressed
 while True:
@@ -65,6 +59,7 @@ while True:
 if len(refPt_cpy) == 2:
     roi = clone[refPt_cpy[0][1]:refPt_cpy[1][1], refPt_cpy[0][0]:refPt_cpy[1][0]]
     cv2.imshow("ROI", roi)
+    print refPt_cpy
     cv2.waitKey(0)
 
 # close all open windows
